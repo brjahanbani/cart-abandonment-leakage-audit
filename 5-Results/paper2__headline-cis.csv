@@ -1,0 +1,8 @@
+mechanism,dataset,auc_leaky,auc_fair,gap,gap_ci_lo,gap_ci_hi,n_test
+L2 completed-session timing,retail_rocket,0.9951,0.5993,0.3959,0.382,0.4094,8705
+L4 history incl. the purchase,retail_rocket,0.9721,0.6968,0.2753,0.2633,0.287,8871
+L2 completed-session timing,flower_shop,0.7419,0.6199,0.122,0.0212,0.2281,162
+L6 checkout steps,flower_shop,0.8752,0.6199,0.2552,0.1606,0.3534,162
+L4 history incl. the purchase,flower_shop,0.9414,0.6034,0.3379,0.2553,0.4269,162
+L2 completed-session timing,rees46,0.9626,0.7195,0.2431,0.2347,0.2518,23090
+L4 history incl. the purchase,rees46,0.8868,0.5551,0.3317,0.3217,0.3415,23138

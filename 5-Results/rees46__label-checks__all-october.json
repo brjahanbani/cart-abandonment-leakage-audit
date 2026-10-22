@@ -1,0 +1,20 @@
+{
+  "cart_sessions": 205351,
+  "purchased_sessions": 25249,
+  "purchase_before_first_add_removed": 228,
+  "purchased_sessions_with_carted_item_not_bought": 12738,
+  "purchased_sessions_with_carted_item_not_bought_not_removed": 955,
+  "first_add_rows": 205123,
+  "first_add_positive_rate": 0.122,
+  "burst_rule_on_whole_month": {
+    "days": 31,
+    "median_cart_sessions_per_day": 5279.0,
+    "flagged_days": 5,
+    "flagged_dates": "2019-10-01, 2019-10-02, 2019-10-06, 2019-10-07, 2019-10-08",
+    "purchase_rate_flagged": 0.0594,
+    "purchase_rate_other": 0.1591,
+    "night_share_flagged": 0.2023,
+    "night_share_other": 0.0991,
+    "automated": true
+  }
+}

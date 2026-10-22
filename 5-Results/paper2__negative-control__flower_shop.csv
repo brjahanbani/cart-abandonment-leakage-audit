@@ -1,0 +1,4 @@
+dataset,config,n,true_auc,true_sd,permuted_auc,permuted_sd,permuted_min,permuted_max,max_single_feature,max_single_feature_auc
+flower_shop,prefix13,825,0.571,0.0164,0.5347,0.0408,0.4733,0.5771,seconds_since_previous_event,0.5887
+flower_shop,prefix13_hist,825,0.599,0.0323,0.5381,0.0201,0.516,0.5641,seconds_since_previous_event,0.5887
+flower_shop,prefix13_product,825,0.6423,0.0107,0.5063,0.0306,0.4594,0.5513,first_item_lead_days,0.6557

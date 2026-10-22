@@ -1,0 +1,4 @@
+dataset,config,n,true_auc,true_sd,permuted_auc,permuted_sd,permuted_min,permuted_max,max_single_feature,max_single_feature_auc
+rees46_nov,prefix13,180951,0.5426,0.0028,0.4928,0.0013,0.4915,0.4949,repeated_views_of_cart_items,0.5259
+rees46_nov,prefix13_hist,180951,0.5444,0.0041,0.4984,0.0018,0.4963,0.5014,repeated_views_of_cart_items,0.5259
+rees46_nov,prefix13_product,180951,0.5643,0.0037,0.4937,0.0047,0.4857,0.5003,first_item_price,0.539

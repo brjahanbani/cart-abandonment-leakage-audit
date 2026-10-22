@@ -1,0 +1,3 @@
+dataset,config,n,true_auc,true_sd,permuted_auc,permuted_sd,permuted_min,permuted_max,max_single_feature,max_single_feature_auc
+retail_rocket,prefix13,43745,0.6218,0.0058,0.4776,0.0136,0.4563,0.4975,seconds_since_first_event,0.5968
+retail_rocket,prefix13_hist,43745,0.6615,0.0109,0.4751,0.0133,0.4574,0.4936,seconds_since_first_event,0.5968

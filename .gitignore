@@ -1,0 +1,31 @@
+# Large data files — too big for GitHub (>100 MB)
+events_clean.csv
+
+# Raw source CSVs and frozen-lineage byproduct exports — excluded from commits
+1-Data/raw/*.csv
+2-Completed-Session/*.csv
+
+# Self-collected event data from a live project (real users) — never commit
+1-Data/own/
+
+# Public REES46 download (Kaggle) — too large for GitHub
+1-Data/rees46/
+
+# Public Taobao User Behavior download (3.7 GB)
+1-Data/taobao/
+
+# Manuscript: build outputs, and the journal-branded PDFs sent to IJACSA
+# (kept locally as the reference the build checks against; not published)
+paper/build/
+paper/ijacsa/submitted-pdf/
+paper/camera-ready/Submitted Files/*.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+
+# MDPI template download (pristine reference copy; class files are copied to docs/paper2/manuscript/Definitions)
+docs/paper2/manuscript/template/

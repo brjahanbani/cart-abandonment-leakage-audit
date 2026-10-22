@@ -1,0 +1,62 @@
+{
+  "rows": 4102283,
+  "columns": [
+    "event_type",
+    "product_id",
+    "category_id",
+    "category_code",
+    "brand",
+    "price",
+    "user_id",
+    "user_session",
+    "ts"
+  ],
+  "nulls": {
+    "category_code": 4034806,
+    "brand": 1659261,
+    "user_session": 637
+  },
+  "event_mix": {
+    "view": 1862164,
+    "cart": 1232385,
+    "remove_from_cart": 762110,
+    "purchase": 245624
+  },
+  "window": [
+    "2019-10-01 00:00:00",
+    "2019-10-31 23:59:54"
+  ],
+  "users": 399664,
+  "products": 41899,
+  "site_sessions": 873960,
+  "exact_duplicate_rows": 213155,
+  "price_le_0": 6086,
+  "price_le_0_by_event": {
+    "view": 5372,
+    "cart": 540,
+    "remove_from_cart": 154,
+    "purchase": 20
+  },
+  "site_sessions_with_several_users": 22,
+  "gap30_sessions": 656106,
+  "gap30_cart_sessions": 205617,
+  "gap30_cart_sessions_with_purchase": 25274,
+  "gap30_cart_session_purchase_rate": 0.1229,
+  "gap30_sessions_with_purchase_but_no_cart": 4102,
+  "purchase_before_first_cart": 228,
+  "purchase_same_second_as_first_cart": 0,
+  "rows_sharing_a_second_with_another_row_of_same_user": 717300,
+  "rr_rule_bot_users": 570,
+  "rr_rule_bot_events": 17511,
+  "rr_rule_bot_purchases": 1301,
+  "events_per_user": {
+    "count": 399664.0,
+    "mean": 10.3,
+    "std": 39.2,
+    "min": 1.0,
+    "50%": 2.0,
+    "90%": 18.0,
+    "99%": 155.0,
+    "max": 3965.0
+  }
+}

@@ -1,0 +1,3 @@
+mechanism,dataset,auc_leaky,auc_fair,gap,gap_ci_lo,gap_ci_hi,n_test
+L2 completed-session timing,taobao,0.9309,0.7757,0.1553,0.1497,0.1602,64430
+L4 history incl. the purchase,taobao,0.7411,0.5764,0.1647,0.1571,0.1728,61540

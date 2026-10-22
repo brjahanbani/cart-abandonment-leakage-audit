@@ -1,0 +1,28 @@
+{
+  "raw_rows": 4102283,
+  "exact_duplicates_dropped": {
+    "remove_from_cart": 184531,
+    "cart": 28167,
+    "purchase": 343,
+    "view": 114
+  },
+  "rr_rule_bot_visitors": 441,
+  "rr_rule_bot_events": 12405,
+  "rr_rule_transactions_removed": 1280,
+  "clean_event_mix": {
+    "view": 1860884,
+    "addtocart": 1199044,
+    "remove_from_cart": 572794,
+    "transaction": 244001
+  },
+  "sessions": 655665,
+  "cart_sessions": 205351,
+  "cart_sessions_with_transaction": 25249,
+  "cart_session_transaction_rate": 0.123,
+  "cart_session_events": 2903642,
+  "cart_visitors": 133552,
+  "window": [
+    "2019-10-01 00:00:00",
+    "2019-10-31 23:59:54"
+  ]
+}

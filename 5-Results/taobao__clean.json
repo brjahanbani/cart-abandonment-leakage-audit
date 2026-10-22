@@ -1,0 +1,21 @@
+{
+  "sample": "users with user_id % 10 == 0",
+  "sample_rows": 9985762,
+  "sample_users": 98768,
+  "rows_outside_window_dropped": 5455,
+  "exact_duplicates_dropped": 6,
+  "rr_rule_bot_visitors": 0,
+  "rr_rule_bot_events": 0,
+  "rr_rule_transactions_removed": 0,
+  "clean_event_mix": {
+    "view": 8938119,
+    "addtocart": 553595,
+    "fav": 287593,
+    "transaction": 200994
+  },
+  "sessions": 1650716,
+  "cart_sessions": 323471,
+  "cart_sessions_with_transaction": 34204,
+  "cart_session_transaction_rate": 0.1057,
+  "cart_session_events": 3706412
+}

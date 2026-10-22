@@ -1,0 +1,36 @@
+mechanism,dataset,present,v1_question,v1_flags,auc_leaky,auc_fair,note
+L1 count reconstructs label,retail_rocket,yes (exact),Q4,yes,1.00,0.61-0.62,event - view - cart = transactions in every session
+L1 count reconstructs label,flower_shop,no (identity holds in 0% of sessions),Q4,no (correct),0.65-0.71,0.58-0.62,extra event types break the identity; residual gain comes from post-decision events in the total
+L1 count reconstructs label,rees46,approximate (= purchases + removals),Q4,partial,0.91,0.72-0.73,Q4 asks for exact reconstruction; a near-identity is only caught by a careful reading
+L1 count reconstructs label,rees46_nov,approximate (= purchases + removals),Q4,partial,0.91-0.92,0.74-0.75,held-out month
+L1 count reconstructs label,taobao,approximate (= purchases + favourites),Q4,partial,0.96,0.77-0.78,unrelated shop; favourites are the extra event type
+L2 completed-session timing,retail_rocket,yes,"Q5, Q6",yes,0.99-1.00,0.61-0.62,timing alone 0.87-0.88
+L2 completed-session timing,flower_shop,yes,"Q5, Q6",yes,0.76-0.78,0.58-0.62,timing alone 0.67-0.70
+L2 completed-session timing,rees46,yes,"Q5, Q6",yes,0.96,0.72-0.73,timing alone 0.86
+L2 completed-session timing,rees46_nov,yes,"Q5, Q6",yes,0.96-0.97,0.74-0.75,timing alone 0.87
+L2 completed-session timing,taobao,yes,"Q5, Q6",yes,0.93,0.77-0.78,timing alone 0.73-0.74
+L3 label mixes purchase and abandonment,retail_rocket,yes,Q3,yes,,,"11.3% of purchased sessions (paper 1, Sec. IV-C; no remove event)"
+L3 label mixes purchase and abandonment,flower_shop,yes (small),Q3,yes,,,"3 of 320 paid sessions, not removed first"
+L3 label mixes purchase and abandonment,rees46,yes,Q3,yes,,,"722 of 18560 purchased sessions, not removed first"
+L3 label mixes purchase and abandonment,rees46_nov,yes,Q3,yes,,,"1178 of 31222 purchased sessions, not removed first"
+L3 label mixes purchase and abandonment,taobao,yes,Q3,yes,,,31026 of 34204 purchased sessions (no remove event)
+L4 history includes the scored purchase,retail_rocket,yes,none,no (missed),0.97-0.98,0.68-0.71,base + history; fair = history before the add
+L5 history includes later purchases,retail_rocket,weak,none,no (missed),0.68-0.73,0.68-0.71,whole period minus this visit; mean gain +0.005 (weak below +0.03)
+L4 history includes the scored purchase,flower_shop,yes,none,no (missed),0.93-0.94,0.59-0.61,base + history; fair = history before the add
+L5 history includes later purchases,flower_shop,yes,none,no (missed),0.67-0.69,0.59-0.61,whole period minus this visit; mean gain +0.080 (weak below +0.03)
+L4 history includes the scored purchase,rees46,yes,none,no (missed),0.89-0.90,0.56,base + history; fair = history before the add
+L5 history includes later purchases,rees46,yes,none,no (missed),0.60-0.62,0.56,whole period minus this visit; mean gain +0.053 (weak below +0.03)
+L4 history includes the scored purchase,rees46_nov,yes,none,no (missed),0.87-0.89,0.56-0.57,base + history; fair = history before the add
+L5 history includes later purchases,rees46_nov,yes,none,no (missed),0.64-0.65,0.56-0.57,whole period minus this visit; mean gain +0.079 (weak below +0.03)
+L4 history includes the scored purchase,taobao,yes,none,no (missed),0.74-0.76,0.57-0.58,base + history; fair = history before the add
+L5 history includes later purchases,taobao,weak,none,no (missed),0.59,0.57-0.58,whole period minus this visit; mean gain +0.014 (weak below +0.03)
+L6 checkout steps after the prediction moment,retail_rocket,n/a (not logged),none,n/a,,,
+L6 checkout steps after the prediction moment,flower_shop,yes,none,no (missed),0.83-0.87,0.58-0.62,
+L6 checkout steps after the prediction moment,rees46,n/a (not logged),none,n/a,,,
+L6 checkout steps after the prediction moment,rees46_nov,n/a (not logged),none,n/a,,,
+L6 checkout steps after the prediction moment,taobao,n/a (not logged),none,n/a,,,
+L7 automated traffic past the bot filter,retail_rocket,no,none,n/a,,,1 flagged days; purchase rate 0.3124 vs 0.2712; night share 0.2738 vs 0.2923
+L7 automated traffic past the bot filter,flower_shop,no,none,n/a,,,6 flagged days; purchase rate 0.2952 vs 0.3511; night share 0.0482 vs 0.0583
+L7 automated traffic past the bot filter,rees46,yes,none,no (missed),0.59-0.66,0.50-0.54,5 flagged days; purchase rate 0.0594 vs 0.1591; night share 0.2023 vs 0.0991
+L7 automated traffic past the bot filter,rees46_nov,no,none,n/a,,,2 flagged days; purchase rate 0.1845 vs 0.1708; night share 0.0798 vs 0.0949
+L7 automated traffic past the bot filter,taobao,no,none,n/a,,,0 flagged days; purchase rate nan vs 0.1057; night share nan vs 0.0618

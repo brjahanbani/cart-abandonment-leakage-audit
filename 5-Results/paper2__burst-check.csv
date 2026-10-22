@@ -1,0 +1,6 @@
+dataset,days,median_cart_sessions_per_day,flagged_days,flagged_dates,purchase_rate_flagged,purchase_rate_other,night_share_flagged,night_share_other,automated
+retail_rocket,139,323.0,1,2015-06-16,0.3124,0.2712,0.2738,0.2923,False
+flower_shop,72,14.0,6,"2026-09-12, 2026-09-14, 2026-09-20, 2026-09-23, 2026-10-03, 2026-10-11",0.2952,0.3511,0.0482,0.0583,False
+rees46,31,5279.0,5,"2019-10-01, 2019-10-02, 2019-10-06, 2019-10-07, 2019-10-08",0.0594,0.1591,0.2023,0.0991,True
+rees46_nov,30,5614.0,2,"2019-11-22, 2019-11-28",0.1845,0.1708,0.0798,0.0949,False
+taobao,9,33806.0,0,,,0.1057,,0.0618,False

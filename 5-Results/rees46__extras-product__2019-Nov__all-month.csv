@@ -1,0 +1,9 @@
+config,split,model,roc_auc,roc_sd
+prefix13,visitor_grouped,LR,0.5388,0.0051
+prefix13,visitor_grouped,XGB,0.5426,0.0031
+prefix13,temporal,LR,0.5509,0.0
+prefix13,temporal,XGB,0.5474,0.0
+prefix13_plus_product,visitor_grouped,LR,0.5494,0.005
+prefix13_plus_product,visitor_grouped,XGB,0.5643,0.0041
+prefix13_plus_product,temporal,LR,0.5584,0.0
+prefix13_plus_product,temporal,XGB,0.5629,0.0

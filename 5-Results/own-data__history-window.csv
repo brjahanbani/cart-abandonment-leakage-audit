@@ -1,0 +1,8 @@
+window,features,visitor_auc,visitor_sd,temporal_auc,temporal_sd,rr_visitor_auc,rr_temporal_auc
+none,base,0.5891,0.0244,0.6088,0.0,0.645,0.664
+asof,agg_only,0.5588,0.0455,0.5751,0.0,0.611,0.633
+asof,base+agg,0.6145,0.0236,0.5918,0.0,0.683,0.711
+full_loo,agg_only,0.6707,0.0324,0.6536,0.0,0.63,0.658
+full_loo,base+agg,0.6935,0.0301,0.672,0.0,0.679,0.726
+full,agg_only,0.9442,0.0093,0.9267,0.0,0.971,0.977
+full,base+agg,0.9401,0.01,0.9257,0.0,0.973,0.977

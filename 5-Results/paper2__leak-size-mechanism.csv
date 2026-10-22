@@ -1,0 +1,5 @@
+dataset,cart_sessions,purchase_rate,abandoned_ending_on_add_to_cart,purchased_ending_on_add_to_cart,purchased_ending_on_purchase,median_s_after_last_purchase,median_age_purchased_s,median_age_abandoned_s
+retail_rocket,43917,0.2717,0.6058,0.0214,0.688,0.0,821.0,172.4
+flower_shop,828,0.3357,0.0073,0.0,0.723,0.0,993.0,606.4
+rees46,115580,0.1606,0.4825,0.0201,0.8844,0.0,1239.0,508.0
+taobao,323471,0.1057,0.3637,0.1518,0.2972,372.5,2012.0,773.0
