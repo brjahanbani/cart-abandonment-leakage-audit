@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this code or these results, please cite them as below."
+title: "Cart-abandonment leakage audit: code and aggregate results"
+abstract: >-
+  Code and aggregate results for two studies of data leakage in cart-abandonment
+  prediction: a leakage audit of completed-session features on the Retail Rocket
+  dataset, and a test of the resulting nine-question checklist on five datasets
+  from four shops. One command reruns every result of the second study.
+type: software
+license: MIT
+repository-code: "https://github.com/brjahanbani/cart-abandonment-leakage-audit"
+authors:
+  - family-names: "Rad Jahanbani"
+    given-names: "Babak"
+    orcid: "https://orcid.org/0009-0001-6910-9747"
+    affiliation: "Bahçeşehir University"
+  - family-names: "Sayar"
+    given-names: "Ahmet"
+    affiliation: "Bahçeşehir University"
+keywords:
+  - data leakage
+  - point-in-time evaluation
+  - cart abandonment
+  - reproducibility

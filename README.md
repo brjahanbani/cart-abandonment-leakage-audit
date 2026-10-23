@@ -12,6 +12,32 @@ Manuscript sources (IJACSA and arXiv) and the build are in
 [paper/](paper/README.md). Every published number is mapped to the script that
 produces it in [docs/results_provenance.md](docs/results_provenance.md).
 
+## Paper 2: does the leakage checklist transfer?
+
+"Does a Leakage Checklist Transfer? Validating and Extending a Point-in-Time Audit
+for Cart-Abandonment Prediction on Independent E-Commerce Data" (manuscript in
+preparation). It tests the nine-question checklist of the first paper on five
+datasets from four shops (Retail Rocket, a private flower shop, REES46 October and
+November 2019, Taobao). One command reruns every result:
+
+    python 9-Paper2/run_all.py
+
+Inputs, environment and the verified runtime are in
+[docs/paper2/REPRODUCE.md](docs/paper2/REPRODUCE.md); the main results are in
+[docs/paper2/detection_matrix.md](docs/paper2/detection_matrix.md),
+[docs/paper2/robustness.md](docs/paper2/robustness.md) and
+[docs/paper2/negative_control.md](docs/paper2/negative_control.md). The flower-shop
+data are private and are not distributed; only aggregate results are included.
+
+| Folder | Contents |
+|---|---|
+| `0-Shared/` | Shared protocol (`paper1_protocol.py`), cleaning rules, burst (bot) check |
+| `6-Point-In-Time/` | Point-in-time probes: history-window aggregates and item-property joins |
+| `7-Own-Data/` | Flower shop: cleaning, sessions, labels, group A and B |
+| `8-REES46/` | REES46: cleaning, group A and B (also used for Taobao with `--dataset taobao`) |
+| `9-Paper2/` | Detection matrix, confidence intervals, leak-size mechanism, negative control, `run_all.py` |
+| `10-Taobao/` | Taobao: profile, cleaning and sessions |
+
 ## Folder layout
 | Folder | Contents |
 |---|---|
