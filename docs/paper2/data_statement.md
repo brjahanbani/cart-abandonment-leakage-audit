@@ -19,13 +19,14 @@ Draft wording:
 
 > The second dataset comes from the production event log of an online flower shop, which is
 > kept anonymous. The author develops the shop's web platform and designed its event
-> collection; the data are used with the written permission of the shop's owner
-> **[PENDING: owner's permission]**. All analyses use pseudonymous browser
+> collection; the data are used with the written permission of the shop's owner. All
+> analyses use pseudonymous browser
 > and customer identifiers. Personal fields (delivery-driver names and phone numbers, payment
 > references, customers' gift notes) were removed on load and never analysed, and no raw
 > records leave the author's machine. Because the data contain customers' purchase histories,
-> they cannot be shared. The code and all aggregate results are public at
-> https://github.com/brjahanbani/Cart-Abandonment-Prediction-Big-Data-Pipeline. The site's
+> they cannot be shared. The code and all aggregate results are archived on Zenodo
+> (https://doi.org/10.5281/zenodo.23601825) and maintained at
+> https://github.com/brjahanbani/cart-abandonment-leakage-audit. The site's
 > terms of use include a privacy commitment to protect users' personal information and
 > reserve the use of site data to the shop, subject to its written permission; the research
 > use relies on that permission and is limited to pseudonymised, aggregate analysis.
@@ -33,6 +34,6 @@ Draft wording:
 ### Points to confirm
 1. ~~Name the shop, or keep it anonymous?~~ **Anonymous** (author, 2026-10-21). No shop name, city, domain or database name in the paper or the public repository.
 2. ~~Your role?~~ **Developer of the shop's website** (author, 2026-10-21). So the **owner's written permission is needed** (an email is enough), covering: use of the pseudonymised event and order logs for research, publication of aggregate results, and that the shop stays unnamed.
-3. ~~Privacy policy or terms?~~ **Reviewed 2026-10-21** (terms provided by the author): a general privacy commitment; no mention of analytics, usage data or research; site data reserved to the shop, subject to its written permission. The owner's written permission is therefore the basis. **[PENDING: owner's reply, using the confirmation text agreed on 2026-10-21]**
-4. ~~Repository?~~ **This research repository, public on GitHub.** The shop's own website code is not involved. The author chose to leave the earlier pushed history as is.
+3. ~~Privacy policy or terms?~~ **Reviewed 2026-10-21** (terms provided by the author): a general privacy commitment; no mention of analytics, usage data or research; site data reserved to the shop, subject to its written permission. The owner's written permission is therefore the basis. **Received by email on 2026-10-23** (kept by the author), in the agreed wording: use of the anonymised event and order records for academic research and publication of aggregate results, on condition that the shop is not named and no personal customer data are published. The author also promised to send the owner the paper before submission.
+4. ~~Repository?~~ **Changed 2026-10-23:** the earlier repository, whose history identified the shop, is now private. Code and aggregate results are public in a clean repository (`brjahanbani/cart-abandonment-leakage-audit`, no shop history) archived on Zenodo (DOI 10.5281/zenodo.23601825, release v1.0). The shop's own website code is not involved.
 5. Ethics approval: **asked Prof. Sayar** (email of 2026-10-21). **[PENDING]**
