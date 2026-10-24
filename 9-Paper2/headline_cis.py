@@ -88,16 +88,19 @@ def record(mech, dataset, y, pl, pf):
 
 ORIG, COUNTS = COMPLETED_CONFIGS["original_completed"], COMPLETED_CONFIGS["counts_only"]
 
-# --- Taobao (unrelated shop): separate run, own output file --------------------
-#   python headline_cis.py taobao  ->  5-Results/paper2__headline-cis__taobao.csv
-if len(sys.argv) > 1 and sys.argv[1] == "taobao":
-    sys.argv = [sys.argv[0], "--dataset", "taobao"]
+# --- Datasets opened last: separate runs, own output files --------------------
+#   python headline_cis.py taobao      ->  5-Results/paper2__headline-cis__taobao.csv
+#   python headline_cis.py rees46_nov  ->  5-Results/paper2__headline-cis__rees46_nov.csv
+SEPARATE = {"taobao": ["--dataset", "taobao"], "rees46_nov": ["--month", "2019-Nov"]}
+if len(sys.argv) > 1 and sys.argv[1] in SEPARATE:
+    name = sys.argv[1]
+    sys.argv = [sys.argv[0]] + SEPARATE[name]
     import group_b_rees46 as gbt  # noqa: E402
-    record("L2 completed-session timing", "taobao", *paper1_pair(gbt.a.completed, ORIG, COUNTS, "completed"))
-    record("L4 history incl. the purchase", "taobao",
+    record("L2 completed-session timing", name, *paper1_pair(gbt.a.completed, ORIG, COUNTS, "completed"))
+    record("L4 history incl. the purchase", name,
            *probe_pair(gbt.pref, gbt.PREFIX13 + ["item_cr_full", "vis_txns_full"],
                        gbt.PREFIX13 + ["item_cr_asof", "vis_txns_asof"]))
-    pd.DataFrame(rows).round(4).to_csv(OUT.with_name("paper2__headline-cis__taobao.csv"), index=False)
+    pd.DataFrame(rows).round(4).to_csv(OUT.with_name(f"paper2__headline-cis__{name}.csv"), index=False)
     sys.exit(0)
 
 # --- Retail Rocket -----------------------------------------------------------

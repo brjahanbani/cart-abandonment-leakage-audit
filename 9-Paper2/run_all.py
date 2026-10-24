@@ -41,6 +41,7 @@ STEPS = [
     ("detection matrix + burst check", "9-Paper2/build_detection_matrix.py", []),
     ("headline confidence intervals", "9-Paper2/headline_cis.py", []),
     ("headline confidence intervals: Taobao", "9-Paper2/headline_cis.py", ["taobao"]),
+    ("headline confidence intervals: REES46 Nov", "9-Paper2/headline_cis.py", ["rees46_nov"]),
     ("leak-size mechanism", "9-Paper2/leak_size_mechanism.py", []),
     ("negative control: Retail Rocket", "9-Paper2/negative_control.py", ["retail_rocket"]),
     ("negative control: flower shop", "9-Paper2/negative_control.py", ["flower_shop"]),

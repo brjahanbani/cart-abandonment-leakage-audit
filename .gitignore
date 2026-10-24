@@ -29,3 +29,9 @@ venv/
 
 # MDPI template download (pristine reference copy; class files are copied to docs/paper2/manuscript/Definitions)
 docs/paper2/manuscript/template/
+
+# Reading and sharing copies of Paper 1 and Paper 2 (regenerated; not sources)
+docs/paper2/manuscript/MANUSCRIPT.pdf
+docs/paper2/manuscript/paper2_changes_since_*.pdf
+docs/paper2/manuscript/paper2_overleaf.zip
+paper/camera-ready/PRIOR.pdf
