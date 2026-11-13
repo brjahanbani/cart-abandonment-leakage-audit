@@ -1,0 +1,291 @@
+commit 9ef426524ead92cad5cb0198e981ce8ad9be18ed
+Date:   2026-10-20 23:02:21 +0300
+Subject: paper2: hub document and detection matrix
+
+
+diff --git a/5-Results/paper2__burst-check.csv b/5-Results/paper2__burst-check.csv
+new file mode 100644
+index 0000000..2b29463
+--- /dev/null
++++ b/5-Results/paper2__burst-check.csv
+@@ -0,0 +1,4 @@
++dataset,days,median_cart_sessions_per_day,flagged_days,flagged_dates,purchase_rate_flagged,purchase_rate_other,night_share_flagged,night_share_other
++retail_rocket,139,323.0,1,2015-06-16,0.3124,0.2712,0.2738,0.2923
++flower_shop,72,14.0,6,"2026-09-12, 2026-09-14, 2026-09-20, 2026-09-23, 2026-10-03, 2026-10-11",0.2952,0.3511,0.0482,0.0583
++rees46,31,5279.0,5,"2019-10-01, 2019-10-02, 2019-10-06, 2019-10-07, 2019-10-08",0.0594,0.1591,0.2023,0.0991
+diff --git a/5-Results/paper2__detection-matrix.csv b/5-Results/paper2__detection-matrix.csv
+new file mode 100644
+index 0000000..eb25183
+--- /dev/null
++++ b/5-Results/paper2__detection-matrix.csv
+@@ -0,0 +1,22 @@
++mechanism,dataset,present,v1_question,v1_flags,auc_leaky,auc_fair,note
++L1 count reconstructs label,retail_rocket,yes (exact),Q4,yes,1.00,0.61-0.62,event - view - cart = transactions in every session
++L1 count reconstructs label,flower_shop,no (identity holds in 0% of sessions),Q4,no (correct),0.65-0.71,0.58-0.62,extra event types break the identity; residual gain comes from post-decision events in the total
++L1 count reconstructs label,rees46,approximate (= purchases + removals),Q4,partial,0.91,0.72-0.73,Q4 asks for exact reconstruction; a near-identity is only caught by a careful reading
++L2 completed-session timing,retail_rocket,yes,"Q5, Q6",yes,0.99-1.00,0.61-0.62,timing alone 0.87-0.88
++L2 completed-session timing,flower_shop,yes,"Q5, Q6",yes,0.76-0.78,0.58-0.62,timing alone 0.67-0.70
++L2 completed-session timing,rees46,yes,"Q5, Q6",yes,0.96,0.72-0.73,timing alone 0.86
++L3 label mixes purchase and abandonment,retail_rocket,yes,Q3,yes,,,"11.3% of purchased sessions (paper 1, Sec. IV-C; no remove event)"
++L3 label mixes purchase and abandonment,flower_shop,yes (small),Q3,yes,,,"3 of 320 paid sessions, not removed first"
++L3 label mixes purchase and abandonment,rees46,yes,Q3,yes,,,"722 of 18560 purchased sessions, not removed first"
++L4 history includes the scored purchase,retail_rocket,yes,none,no (missed),0.97-0.98,0.68-0.71,base + history; fair = history before the add
++L5 history includes later purchases,retail_rocket,weak,none,no (missed),0.68-0.73,0.68-0.71,whole period minus this visit
++L4 history includes the scored purchase,flower_shop,yes,none,no (missed),0.93-0.94,0.59-0.61,base + history; fair = history before the add
++L5 history includes later purchases,flower_shop,yes,none,no (missed),0.67-0.69,0.59-0.61,whole period minus this visit
++L4 history includes the scored purchase,rees46,yes,none,no (missed),0.89-0.90,0.56,base + history; fair = history before the add
++L5 history includes later purchases,rees46,yes,none,no (missed),0.60-0.62,0.56,whole period minus this visit
++L6 checkout steps after the prediction moment,retail_rocket,n/a (not logged),none,n/a,,,
++L6 checkout steps after the prediction moment,flower_shop,yes,none,no (missed),0.83-0.87,0.58-0.62,
++L6 checkout steps after the prediction moment,rees46,n/a (not logged),none,n/a,,,
++L7 automated traffic past the bot filter,retail_rocket,no,none,n/a,,,1 flagged days; purchase rate 0.3124 vs 0.2712; night share 0.2738 vs 0.2923
++L7 automated traffic past the bot filter,flower_shop,no,none,n/a,,,6 flagged days; purchase rate 0.2952 vs 0.3511; night share 0.0482 vs 0.0583
++L7 automated traffic past the bot filter,rees46,yes,none,no (missed),0.59-0.66,0.50-0.54,5 flagged days; purchase rate 0.0594 vs 0.1591; night share 0.2023 vs 0.0991
+diff --git a/9-Paper2/build_detection_matrix.py b/9-Paper2/build_detection_matrix.py
+new file mode 100644
+index 0000000..258b124
+--- /dev/null
++++ b/9-Paper2/build_detection_matrix.py
+@@ -0,0 +1,178 @@
++"""
++build_detection_matrix.py
++=========================
++
++Paper 2's backbone: for every leak mechanism and every dataset, is the leak
++present, does paper 1's nine-question checklist flag it, and what does it
++cost in ROC-AUC. Every number is read from a committed result file (or, for
++the bot check, computed here from the cleaned events); nothing is typed in
++except Retail Rocket's published label-check share and probe values, whose
++sources are named.
++
++Effect = XGBoost ROC-AUC, shown as the range over the splits that were run,
++leaky configuration vs its fair comparator.
++
++Burst check (the REES46 finding, applied to all three datasets): cart
++sessions per day (by session start); a day is flagged when it has more than
++1.5x the median daily count. Reported with the purchase rate and the share
++of sessions starting 00:00-05:59 on flagged vs other days (automated traffic
++shows a flat day; shoppers sleep).
++
++Outputs: 5-Results/paper2__detection-matrix.csv, 5-Results/paper2__burst-check.csv
++"""
++
++import json
++from pathlib import Path
++
++import pandas as pd
++
++ROOT = Path(__file__).resolve().parent.parent
++R = ROOT / "5-Results"
++D = ROOT / "1-Data"
++BURST_FACTOR = 1.5
++
++# Retail Rocket values not in a result file of this repo:
++RR_MIXED_SHARE = "11.3% of purchased sessions (paper 1, Sec. IV-C; no remove event)"
++RR_PROBE = R / "own-data__history-window.csv"  # carries the Oct 2 probe values as rr_* columns
++
++
++def rng(values):
++    lo, hi = min(values), max(values)
++    return f"{lo:.2f}" if round(lo, 2) == round(hi, 2) else f"{lo:.2f}-{hi:.2f}"
++
++
++# ============================================================================
++# BURST CHECK
++# ============================================================================
++def burst(name, path, purchase, ts_unit="ms"):
++    if path.suffix == ".csv":
++        ev = pd.read_csv(path, usecols=["timestamp", "event", "session_key"])
++    else:
++        ev = pd.read_parquet(path, columns=["timestamp", "event", "session_key"])
++    ev["event"] = ev["event"].astype(str)
++    g = ev.groupby("session_key")
++    s = pd.DataFrame({"start": g["timestamp"].min(),
++                      "cart": ev["event"].eq("addtocart").groupby(ev["session_key"]).any(),
++                      "buy": ev["event"].eq(purchase).groupby(ev["session_key"]).any()})
++    s = s[s["cart"]]
++    t = pd.to_datetime(s["start"], unit=ts_unit)
++    s["day"], s["night"] = t.dt.date, t.dt.hour < 6
++    daily = s.groupby("day").size()
++    flagged = daily.index[daily > BURST_FACTOR * daily.median()]
++    f = s["day"].isin(flagged)
++    return {"dataset": name, "days": len(daily), "median_cart_sessions_per_day": float(daily.median()),
++            "flagged_days": len(flagged), "flagged_dates": ", ".join(map(str, flagged)),
++            "purchase_rate_flagged": round(float(s.loc[f, "buy"].mean()), 4) if f.any() else None,
++            "purchase_rate_other": round(float(s.loc[~f, "buy"].mean()), 4),
++            "night_share_flagged": round(float(s.loc[f, "night"].mean()), 4) if f.any() else None,
++            "night_share_other": round(float(s.loc[~f, "night"].mean()), 4)}
++
++
++bursts = pd.DataFrame([
++    burst("retail_rocket", D / "events_clean.csv", "transaction"),
++    burst("flower_shop", D / "own" / "clean" / "events_clean.parquet", "checkout_final"),
++    burst("rees46", D / "rees46" / "clean" / "events_clean.parquet", "transaction"),
++])
++bursts.to_csv(R / "paper2__burst-check.csv", index=False)
++
++# ============================================================================
++# EFFECTS FROM RESULT FILES
++# ============================================================================
++rr = pd.read_csv(R / "split_robustness_summary.csv")
++own = pd.read_csv(R / "own-data__paper1-replication__summary.csv")
++ree = pd.read_csv(R / "rees46__paper1-replication__from-2019-10-09__summary.csv")
++ree_all = pd.read_csv(R / "rees46__paper1-replication__all-october__summary.csv")
++own_funnel = pd.read_csv(R / "own-data__extras-funnel-product.csv")
++own_hist = pd.read_csv(RR_PROBE)
++ree_hist = pd.read_csv(R / "rees46__history-window.csv")
++own_tables = json.loads((R / "own-data__tables.json").read_text(encoding="utf-8"))
++ree_label = json.loads((R / "rees46__label-checks__from-2019-10-09.json").read_text())
++
++
++def xgb(df, config, col="roc_auc", cfg_col="config", model_col="model", table=None):
++    m = (df[cfg_col] == config) & (df[model_col] == "XGB")
++    if table is not None and "table" in df:
++        m &= df["table"] == table
++    return df.loc[m, col].tolist()
++
++
++def hist(df, window, feats, prefix=""):
++    row = df[(df["window"] == window) & (df["features"] == feats)].iloc[0]
++    return [row[f"{prefix}visitor_auc"], row[f"{prefix}temporal_auc"]]
++
++
++def first_add_range(df):
++    return df.loc[(df["table"] == "first_add_k0"), "roc_auc"].tolist()
++
++
++rows = []
++
++
++def add(mech, dataset, present, v1_q, v1_flags, leaky="", fair="", note=""):
++    rows.append({"mechanism": mech, "dataset": dataset, "present": present, "v1_question": v1_q,
++                 "v1_flags": v1_flags, "auc_leaky": leaky, "auc_fair": fair, "note": note})
++
++
++# L1 exact count reconstruction (Q4)
++add("L1 count reconstructs label", "retail_rocket", "yes (exact)", "Q4", "yes",
++    rng(xgb(rr, "target_proxy", "roc_auc_mean")), rng(xgb(rr, "counts_only", "roc_auc_mean")),
++    "event - view - cart = transactions in every session")
++add("L1 count reconstructs label", "flower_shop", "no (identity holds in 0% of sessions)", "Q4", "no (correct)",
++    rng(xgb(own, "target_proxy", table="completed")), rng(xgb(own, "counts_only", table="completed")),
++    "extra event types break the identity; residual gain comes from post-decision events in the total")
++add("L1 count reconstructs label", "rees46", "approximate (= purchases + removals)", "Q4", "partial",
++    rng(xgb(ree, "target_proxy", table="completed")), rng(xgb(ree, "counts_only", table="completed")),
++    "Q4 asks for exact reconstruction; a near-identity is only caught by a careful reading")
++
++# L2 completed-endpoint timing (Q5, Q6)
++for ds, df, col in (("retail_rocket", rr, "roc_auc_mean"), ("flower_shop", own, "roc_auc"), ("rees46", ree, "roc_auc")):
++    kw = {} if ds == "retail_rocket" else {"table": "completed"}
++    add("L2 completed-session timing", ds, "yes", "Q5, Q6", "yes",
++        rng(xgb(df, "original_completed", col, **kw)), rng(xgb(df, "counts_only", col, **kw)),
++        f"timing alone {rng(xgb(df, 'timing_only', col, **kw))}")
++
++# L3 session label vs decision (Q3)
++add("L3 label mixes purchase and abandonment", "retail_rocket", "yes", "Q3", "yes", note=RR_MIXED_SHARE)
++add("L3 label mixes purchase and abandonment", "flower_shop", "yes (small)", "Q3", "yes",
++    note=f"{own_tables['item_check_carted_not_removed_not_bought']} of {own_tables['item_check_paid_sessions']} "
++         "paid sessions, not removed first")
++add("L3 label mixes purchase and abandonment", "rees46", "yes", "Q3", "yes",
++    note=f"{ree_label['purchased_sessions_with_carted_item_not_bought_not_removed']} of "
++         f"{ree_label['purchased_sessions']} purchased sessions, not removed first")
++
++# L4 self-inclusion and L5 future window (history aggregates) - not in the nine questions
++for ds, df, pre in (("retail_rocket", own_hist, "rr_"), ("flower_shop", own_hist, ""), ("rees46", ree_hist, "")):
++    vcol = "rr_visitor_auc" if pre else "visitor_auc"
++    tcol = "rr_temporal_auc" if pre else "temporal_auc"
++
++    def h(w, f):
++        r = df[(df["window"] == w) & (df["features"] == f)].iloc[0]
++        return [r[vcol], r[tcol]]
++    add("L4 history includes the scored purchase", ds, "yes", "none", "no (missed)",
++        rng(h("full", "base+agg")), rng(h("asof", "base+agg")), "base + history; fair = history before the add")
++    add("L5 history includes later purchases", ds, "yes" if ds != "retail_rocket" else "weak", "none", "no (missed)",
++        rng(h("full_loo", "base+agg")), rng(h("asof", "base+agg")), "whole period minus this visit")
++
++# L6 post-decision funnel steps - only the flower shop logs checkout steps
++add("L6 checkout steps after the prediction moment", "retail_rocket", "n/a (not logged)", "none", "n/a")
++add("L6 checkout steps after the prediction moment", "flower_shop", "yes", "none", "no (missed)",
++    rng(xgb(own_funnel, "counts_plus_funnel")), rng(xgb(own_funnel, "counts_only")))
++add("L6 checkout steps after the prediction moment", "rees46", "n/a (not logged)", "none", "n/a")
++
++# L7 automated traffic the bot rules cannot see
++for _, b in bursts.iterrows():
++    present = "yes" if b["flagged_days"] and b["purchase_rate_flagged"] < 0.6 * b["purchase_rate_other"] else "no"
++    leaky = fair = ""
++    if b["dataset"] == "rees46":
++        leaky = rng(ree_all.loc[(ree_all["table"] == "first_add_k0") & (ree_all["split"] == "visitor_grouped"), "roc_auc"])
++        fair = rng(ree.loc[(ree["table"] == "first_add_k0") & (ree["split"] == "visitor_grouped"), "roc_auc"])
++    add("L7 automated traffic past the bot filter", b["dataset"], present, "none", "no (missed)" if present == "yes" else "n/a",
++        leaky, fair, f"{b['flagged_days']} flagged days; purchase rate {b['purchase_rate_flagged']} vs "
++                     f"{b['purchase_rate_other']}; night share {b['night_share_flagged']} vs {b['night_share_other']}")
++
++matrix = pd.DataFrame(rows)
++matrix.to_csv(R / "paper2__detection-matrix.csv", index=False)
++pd.set_option("display.width", 250)
++pd.set_option("display.max_colwidth", 70)
++print(bursts.to_string(index=False))
++print(matrix.drop(columns="note").to_string(index=False))
+diff --git a/docs/paper2/detection_matrix.md b/docs/paper2/detection_matrix.md
+new file mode 100644
+index 0000000..d8aece5
+--- /dev/null
++++ b/docs/paper2/detection_matrix.md
+@@ -0,0 +1,58 @@
++# Paper 2 · Detection matrix
++
++Built 2026-10-20 by `9-Paper2/build_detection_matrix.py` from the committed result files.
++Outputs: `5-Results/paper2__detection-matrix.csv`, `5-Results/paper2__burst-check.csv`.
++
++**Question:** for each leak mechanism and each dataset, is the leak present, does paper 1's
++nine-question checklist (v1) flag it, and what does it cost?
++**Effect:** XGBoost ROC-AUC, leaky configuration vs its fair comparator, as the range over the splits run.
++
++## The matrix
++
++| Mechanism | Checklist v1 | Retail Rocket | Flower shop | REES46 (clean) |
++|---|---|---|---|---|
++| **L1** A count reconstructs the label | Q4 | present (exact); **flagged**; 1.00 vs 0.61–0.62 | absent (identity holds in 0% of sessions); **correctly not flagged** | approximate (= purchases + removals); **partly flagged**; 0.91 vs 0.72–0.73 |
++| **L2** Completed-session timing | Q5, Q6 | present; **flagged**; 0.995 vs 0.61–0.62 | present; **flagged**; 0.76–0.78 vs 0.58–0.62 | present; **flagged**; 0.96 vs 0.72–0.73 |
++| **L3** Label mixes purchase and abandonment | Q3 | present; **flagged**; 11.3% of purchased sessions | present (small); **flagged**; 3 of 320 | present; **flagged**; 722 of 18,560 (3.9%) |
++| **L4** History includes the scored purchase | none | present; **missed**; 0.97–0.98 vs 0.68–0.71 | present; **missed**; 0.93–0.94 vs 0.59–0.61 | present; **missed**; 0.89–0.90 vs 0.56 |
++| **L5** History includes later purchases | none | weak; **missed**; 0.68–0.73 vs 0.68–0.71 | present; **missed**; 0.67–0.69 vs 0.59–0.61 | present; **missed**; 0.60–0.62 vs 0.56 |
++| **L6** Checkout steps after the prediction moment | none | not logged | present; **missed**; 0.83–0.87 vs 0.58–0.62 | not logged |
++| **L7** Automated traffic past the bot filter | none | absent (burst check) | absent (burst check) | present; **missed**; 0.59–0.66 vs 0.50–0.54 (first add, visitor split) |
++
++How each leak entered the data: L1 and L2 come from paper 1's own feature function, the way a typical session table is built. L4–L6 are features built the way a routine pipeline would build them ("lifetime purchases", "item conversion rate", checkout-step counts). L7 sits in the raw data. L3 is a property of the label (an item-level share, no AUC effect measured).
++
++## What it shows
++
++- **Checklist v1 catches the leaks it was written for, on every new dataset.** L2 and L3 are flagged on 3 of 3 datasets. L1 is flagged where it exists exactly, correctly not flagged where it doesn't (flower shop), and only partly caught where it exists approximately (REES46).
++- **It misses every leak outside its scope**, and those include the largest one: L4 (self-inclusion) reaches 0.89–0.98 on all three datasets with no question pointing at it.
++- **Count over the 16 cases where a leak is present:** flagged 7, partly flagged 1, missed 8.
++- **False positives:** no question raised a flag where no leak existed. With only one true negative in the matrix (L1 on the flower shop), a false-positive *rate* can't be estimated yet.
++
++## Burst check (L7), applied to all three datasets
++
++Cart sessions per day; a day is flagged above 1.5× the median daily count.
++
++| | Flagged days | Purchase rate, flagged vs other | Night share (00–06), flagged vs other | Verdict |
++|---|---|---|---|---|
++| Retail Rocket | 1 (2015-06-16) | 31% vs 27% | 27% vs 29% | busy day, not automated |
++| Flower shop | 6 (occasion days, Sep–Oct) | 30% vs 35% | 5% vs 6% | busy days, not automated |
++| REES46 | 5 (Oct 1, 2, 6, 7, 8) | **6% vs 16%** | **20% vs 10%** | automated traffic |
++
++Rule for "present": flagged days whose purchase rate is below 60% of the other days'. The night share confirms it independently.
++
++## Proposed checklist v2 (to be tested on unseen data)
++
++| # | Question | Covers |
++|---|---|---|
++| Q4′ | Can the label event's count be reconstructed from other counts, **exactly or approximately**? | L1 near-identities (REES46) |
++| Q10 | Does any feature record a step of the process that produces the label (checkout, payment) **after the prediction moment**? | L6 |
++| Q11 | Is any aggregate (customer history, item popularity) computed over a window that **includes the scored case or anything after the prediction moment**? | L4, L5 |
++| Q12 | Do daily volumes and the hour-of-day profile show **traffic the bot filter can't see** (bursts with flat days and low purchase rates)? | L7 |
++| Q13 | Did the **logging schema change** during the data period? | observed on the flower shop (Aug 23); not measured |
++
++**Circularity:** these questions were suggested by the same three datasets. Validating them needs data they weren't derived from (planned: REES46 November 2019).
++
++## Caveats
++- Flower-shop effects rest on 828 sessions (intervals about ±0.09); REES46 intervals are about ±0.01.
++- Retail Rocket's L4/L5 values come from the Oct 2 probe (printed values recorded in `docs/point_in_time_log.md`), not from a rerun in this repo.
++- The burst rule is simple and day-level; the 1.5× and 60% thresholds were set after seeing REES46 and need testing on unseen data too.

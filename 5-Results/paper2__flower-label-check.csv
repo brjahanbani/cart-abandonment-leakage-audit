@@ -1,0 +1,9 @@
+label,mechanism,auc_leaky,auc_fair,gap,positive_rate_completed
+final_event,L2 completed-session timing,0.7419,0.6199,0.122,0.3357
+final_event,L6 checkout steps,0.8752,0.6199,0.2552,0.3357
+final_event,L4 history incl. the scored purchase,0.9414,0.6824,0.2589,0.3357
+final_event,L4+L5 whole-period history,0.9414,0.6034,0.3379,0.3357
+paid_order,L2 completed-session timing,0.7432,0.5868,0.1564,0.3273
+paid_order,L6 checkout steps,0.8645,0.5868,0.2777,0.3273
+paid_order,L4 history incl. the scored purchase,0.9432,0.68,0.2632,0.3273
+paid_order,L4+L5 whole-period history,0.9432,0.6331,0.3102,0.3273

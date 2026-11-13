@@ -5,7 +5,9 @@
 "When Offline Performance Misleads: A Leakage Audit of Completed-Session
 Features for Cart-Abandonment Prediction" — Babak Rad Jahanbani, Ahmet Sayar.
 
-- **IJACSA:** manuscript MS-17-10-0048, **accepted for publication** (October 2026); DOI pending.
+- **IJACSA:** **published** 2026-10-30, Vol. 17, No. 10, Paper 97, pp. 1109–1118,
+  DOI [10.14569/IJACSA.2026.0171097](https://doi.org/10.14569/IJACSA.2026.0171097)
+  ([paper page](https://thesai.org/Publications/ViewPaper?Volume=17&Issue=10&Code=IJACSA&SerialNo=97)). Open access, CC BY 4.0.
 - **arXiv:** submitted 2026-09-21, cs.AI.
 
 Manuscript sources (IJACSA and arXiv) and the build are in
@@ -14,7 +16,7 @@ produces it in [docs/results_provenance.md](docs/results_provenance.md).
 
 ## Paper 2: does the leakage checklist transfer?
 
-"Does a Leakage Checklist Transfer? Validating and Extending a Point-in-Time Audit
+"Does a Leakage Checklist Transfer? Testing and Extending a Point-in-Time Audit
 for Cart-Abandonment Prediction on Independent E-Commerce Data" (manuscript in
 preparation). It tests the nine-question checklist of the first paper on five
 datasets from four shops (Retail Rocket, a private flower shop, REES46 October and

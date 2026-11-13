@@ -1,8 +1,9 @@
 # Results Provenance
 
 > **Paper naming (updated 2026-09-30).** "Workshop paper" below is the
-> manuscript accepted at IJACSA in October 2026 (MS-17-10-0048) and on arXiv
-> (submitted 2026-09-21); sources in `paper/`. Its table numbering carried
+> manuscript published in IJACSA Vol. 17, No. 10 on 2026-10-30 (MS-17-10-0048,
+> DOI 10.14569/IJACSA.2026.0171097) and on arXiv (submitted 2026-09-21);
+> sources in `paper/`. Its table numbering carried
 > over unchanged: workshop Table 3 / 4 / 5 = IJACSA Table III / IV / V.
 > "Final Report" is the earlier course report, which is not published.
 

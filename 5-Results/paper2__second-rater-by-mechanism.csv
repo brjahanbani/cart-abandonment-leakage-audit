@@ -1,0 +1,10 @@
+group,n,first_author,A,B
+negative controls,14,0/0/14,4/10/0,0/0/14
+L1 count proxy,4,1/3/0,4/0/0,3/1/0
+L3 session-level label,5,5/0/0,3/2/0,1/0/4
+L4 history incl. scored session,5,0/0/5,4/1/0,2/3/0
+L2 completed-session timing,5,5/0/0,4/1/0,3/2/0
+L5 history incl. later sessions,5,0/0/5,2/3/0,3/1/1
+L1 absent,1,0/0/1,1/0/0,1/0/0
+L6 checkout steps after the decision,1,0/0/1,1/0/0,1/0/0
+L7 automated traffic past the bot filter,1,0/0/1,0/1/0,0/0/1

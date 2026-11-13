@@ -73,7 +73,7 @@ sessions each analysis used.
 
 | | Retail Rocket | REES46 | Flower shop |
 |---|---|---|---|
-| **Abandoned visits that end right on an add-to-cart** | **60.6%** | **48.3%** | **0.7%** |
+| **Abandoned visits that end right on an add-to-cart** | **60.6%** | **48.3%** | **18.4%** (0.7% as logged) |
 | Purchased visits that end on an add-to-cart | 2.1% | 2.0% | 0.0% |
 | Purchased visits that end on the purchase | 68.8% | 88.4% | 72.3% |
 | Median visit length, purchased / abandoned (s) | 821 / 172 | 1,239 / 508 | 993 / 606 |
@@ -81,13 +81,19 @@ sessions each analysis used.
 
 The leak follows **how abandoned visits end.** When most non-buyers leave right after adding
 to cart, "time since the last add-to-cart, up to the visit's end" is zero for them and
-positive for buyers, so it nearly gives away the label. In the flower shop, non-buyers keep
-browsing after adding to cart, and the signal fades. How buyers end doesn't explain the
+positive for buyers, so it nearly gives away the label. In the flower shop the signal is
+weaker, and part of the reason is logging: its front end records a cart-page event
+(`checkout_cart`) automatically right after each add-to-cart (median 0.6 s; 1,270 of 1,930 such
+events), so as logged almost no visit ends on an add-to-cart. Counting that event as part of
+the add-to-cart (the `*_merged` columns) gives 18.4% of abandoned visits against 0.0% of
+purchased ones. How buyers end doesn't explain the
 difference: they end on the purchase in 69–88% of visits everywhere. Retail Rocket's 60.6% and
 2.1% reproduce paper 1's published figures (§IV-B).
 
 *(This corrects an earlier, unmeasured explanation, "flower-shop buyers keep browsing after
-paying", which appeared in `docs/own_dataset_audit.md` and on the results page.)*
+paying", which appeared in `docs/own_dataset_audit.md` and on the results page. Its successor,
+"non-buyers keep browsing after adding to cart", was also wrong: it read the automatic
+cart-page event as browsing. Corrected 2026-10-27.)*
 
 ## 4. Unrelated shop: Taobao (added 2026-10-21)
 
@@ -139,3 +145,52 @@ cart works like a wish list, so the session-level label (paper 1's Q3) is far mo
 here than on the other datasets (0.9–11.3%).
 
 **Bot rule:** no day flagged (China time), a correct negative.
+
+## 5. Revision after the reviews (added 2026-10-27)
+
+Scripts: `headline_cis.py` (extended), `leak_size_mechanism.py` (November added),
+`flower_label_check.py`, `pr_auc_table.py`, `taobao_sample_check.py`, `scoring_rules.py`.
+Triage: `chatgpt_review_triage.md`.
+
+**L4 isolated.** The old L4 comparison (whole period vs before the add) also contained the later
+purchases (L5). L4 now compares the whole period with the whole period minus the scored session.
+Paired gaps, seed 42 (five-seed range): Retail Rocket +0.337 (+0.279 to +0.337), flower shop
++0.259 (+0.207 to +0.281), REES46 Oct +0.274, Nov +0.219, Taobao +0.149. The old column
+(L4+L5, "lifetime purchases" as usually built) is unchanged: +0.165 to +0.338. On Retail Rocket
+L5 is unstable around zero (−0.062 at seed 42; −0.062 to +0.015 over seeds), which is why L4
+alone exceeds the combined column there.
+
+**L1 nested comparator.** Count proxy vs the same three counts without the event count: Retail
+Rocket 1.00 / 0.60, REES46 Oct 0.91 / 0.63, Nov 0.91 / 0.65, Taobao 0.96 / 0.66.
+
+**Session endings within each dataset: the endings do not carry the leak.**
+
+| | RR | REES46 Oct | REES46 Nov | Taobao | Flower |
+|---|---|---|---|---|---|
+| Abandoned / purchased ending on an add-to-cart | 60.6 / 2.1% | 48.3 / 2.0% | 48.7 / 1.9% | 36.4 / 15.2% | 18.4 / 0.0% |
+| L2 leak, all test sessions | +0.396 | +0.243 | +0.222 | +0.155 | +0.122 |
+| Completed set, sessions not ending within 3 s of an add-to-cart | 0.991 | 0.936 | 0.940 | 0.909 | 0.706 |
+| L2 leak on those sessions | +0.531 | +0.255 | +0.238 | +0.205 | +0.065 |
+| Dropping only the last-add recency | −0.000 | +0.012 | +0.013 | +0.002 | +0.053 |
+
+Across datasets the leak still tracks the endings (and November falls next to October), but
+within a dataset the leaky model stays near its full score without the sessions that end on an
+add-to-cart, and the other timing features carry the endpoint when the recency is dropped. The
+leak comes from timing measured to the session's end; the endings mark it.
+
+**Flower-shop labels** (828 analysed sessions): final event vs paid order agree in 822 (99.3%);
+6 final events have no paid order, no paid order lacks a final event. With the paid-order label
+the gaps are L2 +0.156 (vs +0.122), L6 +0.278 (+0.255), L4 +0.263 (+0.259).
+
+**Taobao sample** (raw rows in the data period): all users vs the 10% sample: 101.3 vs 101.0
+events per user; purchases 2.01% of events in both; 68.1% vs 68.3% of users ever buy; 0.365 vs
+0.363 buys per add-to-cart.
+
+**Scoring rules** (written after the reviews, applied to existing results). Q4′: the identity
+holds exactly in 100% (RR), 0% (flower), 52% / 51% (REES46 Oct / Nov), 92% (Taobao) of cart
+sessions. Q8 lenient (partly flags a configuration more than a margin above the dataset's best
+negative control): margin 0.10 → 11 flagged / 9 partly / 6 missed; margin 0.05 → 11 / 13 / 2
+(strict: 11 / 3 / 12).
+
+**PR-AUC** (`paper2__pr-auc.csv`): same picture as ROC-AUC; first add-to-cart PR-AUC is only a
+little above the positive rate (Taobao 0.079 vs 0.068, REES46 Oct 0.178 vs 0.160).

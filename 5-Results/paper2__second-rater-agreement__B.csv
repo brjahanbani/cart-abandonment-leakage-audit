@@ -1,0 +1,2 @@
+rater,items,agreement,cohen_kappa,cohen_kappa_ci,gwet_ac1,gwet_ac1_ci,binary_agreement,question_agreement,tally_first_present,tally_first_flagged,tally_first_partly,tally_first_missed,tally_first_negatives,tally_first_false_alarms,tally_second_present,tally_second_flagged,tally_second_partly,tally_second_missed,tally_second_negatives,tally_second_false_alarms
+B,41,0.537,0.194,"[-0.036, 0.416]",0.355,"[0.119, 0.573]",0.634,0.7,26,11,3,12,14,0,26,13,7,6,14,0

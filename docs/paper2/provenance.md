@@ -2,8 +2,23 @@
 
 REES46 November and Taobao were opened only after the rules below had been committed. The
 commits are in the authors' private development repository, whose history also contains
-material about the private flower-shop data and is therefore not published. The hashes and
-times below identify them; reviewers can inspect the full history on request.
+material about the private flower-shop data and is therefore not published as a whole. The
+hashes and times below identify them, and the two commits that fixed the rules and the
+prediction are archived as diffs of the files they changed, limited to files that are public
+anyway (author e-mail and private planning notes left out):
+
+- `provenance/9ef4265_rules.patch`: the cleaning and burst rules, the checklist answers per
+  mechanism (`build_detection_matrix.py`), and the revised questions Q4′ and Q10–Q13
+  (`detection_matrix.md`).
+- `provenance/6a2a65c_taobao_prediction.patch`: Taobao cleaning and the leak-size prediction
+  (`leak_size_mechanism.py`).
+
+**What this record shows, and what it cannot.** It shows the content of the rules and the
+prediction and the times the authors' repository recorded for them; the archived code and the
+paper were deposited later, so the record is not independently timestamped. It cannot show
+that no one looked at the late datasets before these times; the paper states the order of
+events (Section 2.4), including that Taobao's session endings were measured before the
+prediction was written.
 
 | Commit | Time (UTC+3) | What it fixed |
 |---|---|---|
@@ -24,3 +39,9 @@ times below identify them; reviewers can inspect the full history on request.
 Outcome (paper, Section 3.2): Taobao's leak is +0.155 [0.150, 0.160], below REES46's +0.243. The
 second half, above the flower shop's +0.122 [0.021, 0.228], cannot be resolved because the
 flower shop's interval contains Taobao's value.
+
+**Later correction (2026-10-27).** The prediction used the flower shop's ending share as
+logged (0.7 points). The flower shop's front end records a cart-page event automatically right
+after each add-to-cart; counted as part of the add-to-cart, its difference is 18.4 points
+(`leak_size_mechanism.py`, `*_merged` columns). This does not affect the tested half of the
+prediction (Taobao below REES46), which used only Taobao's and REES46's values.

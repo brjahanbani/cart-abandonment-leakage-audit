@@ -55,7 +55,7 @@ The questions are answered from how each feature is built, which is the same on 
 
 Protocol: group A's (visitor-grouped split, cap fitted on train, XGBoost, seeds 11–55). Shuffled labels: the training labels are permuted, and the test is scored on the true labels.
 
-- **With shuffled labels every pipeline drops to chance**, so the split, the preprocessing and the features carry no hidden label information.
+- **With shuffled labels every pipeline drops to chance**, so the split and the preprocessing carry no hidden label information. (This test cannot clear the features: a leaky feature carries the true label into the test set as well, and a model trained on shuffled labels cannot learn to use it. Corrected 2026-10-27.)
 - **No single feature is strong** (≤ 0.66), unlike the leaky features in the matrix, where the two history aggregates including the scored purchase alone reach 0.73–0.98 (`*history-window*.csv`, rows `full, agg_only`: Taobao 0.73–0.75 … Retail Rocket 0.97–0.98).
 - Retail Rocket's and Taobao's shuffled scores sit slightly below 0.5 (0.475–0.489). The deviation is small and far from any leak level; its cause isn't investigated.
 

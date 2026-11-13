@@ -1,3 +1,8 @@
-mechanism,dataset,auc_leaky,auc_fair,gap,gap_ci_lo,gap_ci_hi,n_test
-L2 completed-session timing,taobao,0.9309,0.7757,0.1553,0.1497,0.1602,64430
-L4 history incl. the purchase,taobao,0.7411,0.5764,0.1647,0.1571,0.1728,61540
+mechanism,dataset,auc_leaky,auc_fair,gap,gap_ci_lo,gap_ci_hi,gap_ci_vis_lo,gap_ci_vis_hi,gap_seed_min,gap_seed_max,n_test,n_test_visitors
+L1 count reconstructs the label,taobao,0.9601,0.6567,0.3033,0.2965,0.3099,0.2966,0.3101,0.2923,0.3033,64430,14818
+L2 completed-session timing,taobao,0.9309,0.7757,0.1553,0.1497,0.1602,0.1501,0.1604,0.1488,0.1553,64430,14818
+L2 last-add recency,taobao,0.9309,0.929,0.002,0.0009,0.003,0.0009,0.003,-0.0011,0.002,64430,14818
+L2 not ending on a cart,taobao,0.909,0.7041,0.2048,0.1979,0.2118,0.1979,0.2125,0.1969,0.2048,42366,13090
+L4 history incl. the scored purchase,taobao,0.7411,0.5924,0.1486,0.1434,0.1542,0.1428,0.1545,0.1486,0.1539,61540,14678
+L5 history incl. later purchases,taobao,0.5924,0.5764,0.016,0.0099,0.0222,0.0105,0.0223,0.012,0.0192,61540,14678
+L4+L5 whole-period history,taobao,0.7411,0.5764,0.1647,0.1571,0.1728,0.157,0.1725,0.1647,0.1725,61540,14678

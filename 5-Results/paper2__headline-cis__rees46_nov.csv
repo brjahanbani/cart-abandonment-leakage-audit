@@ -1,3 +1,8 @@
-mechanism,dataset,auc_leaky,auc_fair,gap,gap_ci_lo,gap_ci_hi,n_test
-L2 completed-session timing,rees46_nov,0.965,0.7434,0.2216,0.2151,0.2278,36304
-L4 history incl. the purchase,rees46_nov,0.8705,0.5649,0.3056,0.2983,0.3135,35737
+mechanism,dataset,auc_leaky,auc_fair,gap,gap_ci_lo,gap_ci_hi,gap_ci_vis_lo,gap_ci_vis_hi,gap_seed_min,gap_seed_max,n_test,n_test_visitors
+L1 count reconstructs the label,rees46_nov,0.9136,0.6483,0.2653,0.2583,0.2727,0.2581,0.2729,0.2653,0.2727,36304,19134
+L2 completed-session timing,rees46_nov,0.965,0.7434,0.2216,0.2151,0.2278,0.2153,0.2279,0.2216,0.2281,36304,19134
+L2 last-add recency,rees46_nov,0.965,0.952,0.013,0.0116,0.0143,0.0114,0.0145,0.0118,0.0136,36304,19134
+L2 not ending on a cart,rees46_nov,0.9398,0.7013,0.2385,0.2309,0.2459,0.2313,0.2466,0.2385,0.2454,21058,12844
+L4 history incl. the scored purchase,rees46_nov,0.8705,0.6515,0.219,0.2114,0.2262,0.2082,0.2293,0.2142,0.2213,35737,19130
+L5 history incl. later purchases,rees46_nov,0.6515,0.5649,0.0866,0.078,0.0949,0.0771,0.0964,0.0834,0.0918,35737,19130
+L4+L5 whole-period history,rees46_nov,0.8705,0.5649,0.3056,0.2983,0.3135,0.2966,0.3147,0.3038,0.3097,35737,19130

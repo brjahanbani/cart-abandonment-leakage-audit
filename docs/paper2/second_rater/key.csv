@@ -1,0 +1,42 @@
+item,dataset,mechanism,first_author_rating,questions
+A1,retail_rocket,negative:prefix13,N,
+A2,retail_rocket,L1 count proxy (exact),F,Q4
+A3,retail_rocket,L3 session-level label,F,Q3
+A4,retail_rocket,L4 history incl. scored session,N,
+A5,retail_rocket,L2 completed-session timing,F,Q5;Q6
+A6,retail_rocket,negative:prefix13_hist,N,
+A7,retail_rocket,L5 history incl. later sessions,N,
+B1,flower_shop,L1 absent (identity does not hold),N,
+B2,flower_shop,negative:prefix13_product,N,
+B3,flower_shop,L2 completed-session timing,F,Q5;Q6
+B4,flower_shop,L4 history incl. scored session,N,
+B5,flower_shop,negative:prefix13,N,
+B6,flower_shop,L6 checkout steps after the decision,N,
+B7,flower_shop,L3 session-level label,F,Q3
+B8,flower_shop,L5 history incl. later sessions,N,
+B9,flower_shop,negative:prefix13_hist,N,
+C1,rees46_oct,negative:prefix13_hist,N,
+C2,rees46_oct,L2 completed-session timing,F,Q5;Q6
+C3,rees46_oct,L7 automated traffic past the bot filter,N,
+C4,rees46_oct,L1 count proxy (approximate),P,Q4
+C5,rees46_oct,L4 history incl. scored session,N,
+C6,rees46_oct,L3 session-level label,F,Q3
+C7,rees46_oct,negative:prefix13_product,N,
+C8,rees46_oct,L5 history incl. later sessions,N,
+C9,rees46_oct,negative:prefix13 (clean window),N,
+D1,rees46_nov,L3 session-level label,F,Q3
+D2,rees46_nov,L5 history incl. later sessions,N,
+D3,rees46_nov,negative:prefix13,N,
+D4,rees46_nov,L1 count proxy (approximate),P,Q4
+D5,rees46_nov,negative:prefix13_product,N,
+D6,rees46_nov,L4 history incl. scored session,N,
+D7,rees46_nov,L2 completed-session timing,F,Q5;Q6
+D8,rees46_nov,negative:prefix13_hist,N,
+E1,taobao,L2 completed-session timing,F,Q5;Q6
+E2,taobao,negative:prefix13_hist,N,
+E3,taobao,L4 history incl. scored session,N,
+E4,taobao,L3 session-level label,F,Q3
+E5,taobao,negative:prefix13_product,N,
+E6,taobao,L1 count proxy (approximate),P,Q4
+E7,taobao,negative:prefix13,N,
+E8,taobao,L5 history incl. later sessions,N,

@@ -34,4 +34,30 @@ docs/paper2/manuscript/template/
 docs/paper2/manuscript/MANUSCRIPT.pdf
 docs/paper2/manuscript/paper2_changes_since_*.pdf
 docs/paper2/manuscript/paper2_overleaf.zip
+docs/paper2/manuscript/paper2_overleaf*/
 paper/camera-ready/PRIOR.pdf
+
+# Paper 4 reading PDFs (publisher copyright; local only; was Paper 3 until 2026-11-02)
+docs/paper4/papers/*.pdf
+docs/paper3/papers/*.pdf
+
+# BAYEK application: per-part PDFs made by tools/ethics_build_pdf.py (regenerated)
+docs/thesis/LEE Etik Kurul/Application 2026-11/pdf/
+
+# Personal Claude Code hooks (positions reminder); never committed or published
+.claude/settings.local.json
+.claude/hooks/
+
+# Paper 3 (A4): confidential TÜBİTAK 1507 project deck and Prof. Sayar's raw notes; local only
+docs/paper3/confidential/
+
+# Office lock files (created while a document is open in Word)
+~$*
+# filled or signed copies name the shop: never in git (2026-11-08)
+*FILLED*
+*filled_owner*
+*_signed*
+*SIGNED*
+# the final BAYEK PDF contains the owner's signed letter (2026-11-10)
+docs/thesis/LEE Etik Kurul/FILLED - SIGNED/
+Babak Rad Jahanbani_2595676_*.pdf

@@ -1,0 +1,190 @@
+commit 6a2a65c2437dfa508c0acfe9101e5adaeb0977d7
+Date:   2026-10-21 00:57:05 +0300
+Subject: taobao: clean build; leak-size prediction registered before group A
+
+
+diff --git a/10-Taobao/build_taobao_events.py b/10-Taobao/build_taobao_events.py
+new file mode 100644
+index 0000000..737e976
+--- /dev/null
++++ b/10-Taobao/build_taobao_events.py
+@@ -0,0 +1,96 @@
++"""
++build_taobao_events.py
++======================
++
++Cleaning + sessionization of the Taobao "User Behavior" dataset (Alibaba,
++China, 25 Nov - 3 Dec 2017), the unrelated fourth shop for Paper 2, with
++paper 1's own rules (0-Shared/clean_events.py), as for every other dataset.
++
++Steps
++  1. Read the 3.7 GB file in chunks and keep a fixed 10% user sample
++     (user_id divisible by 10). Every kept user keeps all their events, so
++     sessions stay whole. 10%, not more, because building session keys for
++     ~10M events already uses several GB on this machine.
++  2. Keep the nine data days (China time, UTC+8), per profile_taobao.py:
++     55,576 rows across the file carry impossible dates (1902-2037).
++  3. Drop exact duplicate rows.
++  4. Paper 1's vocabulary: pv -> view, cart -> addtocart, buy -> transaction;
++     fav keeps its name (an extra event type, like REES46's removals).
++     timestamp in ms (UTC epoch, as for the other datasets).
++  5. Paper 1's bot rules and 30-minute sessions, unchanged.
++  6. Keep cart sessions; also save every clean event (history features).
++Timestamps are whole seconds, so same-second order is unknown (as REES46).
++
++Output: 1-Data/taobao/clean/events_cart_sessions.parquet, events_clean.parquet (git-ignored)
++        5-Results/taobao__clean.json
++"""
++
++import json
++import sys
++from pathlib import Path
++
++import pandas as pd
++
++ROOT = Path(__file__).resolve().parent.parent
++sys.path.insert(0, str(ROOT / "0-Shared"))
++from clean_events import remove_bots, sessionize  # noqa: E402  (paper 1's rules)
++
++RAW = ROOT / "1-Data" / "taobao" / "raw" / "UserBehavior.csv"
++CLEAN = ROOT / "1-Data" / "taobao" / "clean"
++STATS = ROOT / "5-Results" / "taobao__clean.json"
++SAMPLE_MOD = 10
++CHINA = 8 * 3600
++FIRST_DAY, LAST_DAY = pd.Timestamp("2017-11-25"), pd.Timestamp("2017-12-03")
++EVENT_MAP = {"pv": "view", "cart": "addtocart", "buy": "transaction", "fav": "fav"}
++
++stats = {"sample": f"users with user_id % {SAMPLE_MOD} == 0"}
++parts = []
++for chunk in pd.read_csv(RAW, header=None, names=["user", "item", "cat", "behavior", "ts"],
++                         dtype={"user": "int32", "item": "int32", "cat": "int32",
++                                "behavior": "category", "ts": "int64"}, chunksize=5_000_000):
++    parts.append(chunk[chunk["user"] % SAMPLE_MOD == 0])
++df = pd.concat(parts, ignore_index=True)
++del parts
++stats["sample_rows"] = len(df)
++stats["sample_users"] = int(df["user"].nunique())
++
++day = pd.to_datetime(df["ts"] + CHINA, unit="s", errors="coerce").dt.normalize()
++in_window = day.between(FIRST_DAY, LAST_DAY)
++stats["rows_outside_window_dropped"] = int((~in_window).sum())
++df = df[in_window.values]
++
++dup = df.duplicated()
++stats["exact_duplicates_dropped"] = int(dup.sum())
++df = df[~dup]
++
++df = pd.DataFrame({
++    "timestamp": df["ts"].values * 1000,
++    "visitorid": df["user"].values,
++    "event": df["behavior"].astype(str).map(EVENT_MAP).values,
++    "itemid": df["item"].values,
++    "category_id": df["cat"].values,
++})
++assert df["event"].notna().all(), "unmapped behavior"
++df["event"] = df["event"].astype("category")
++
++df, bot_stats = remove_bots(df)
++stats["rr_rule_bot_visitors"] = bot_stats["n_bot_visitors"]
++stats["rr_rule_bot_events"] = bot_stats["n_bot_events"]
++stats["rr_rule_transactions_removed"] = int(bot_stats["transactions_removed_by_bot_filter"])
++stats["clean_event_mix"] = {k: int(v) for k, v in bot_stats["clean_event_mix"].items()}
++
++df = sessionize(df).drop(columns=["prev_ts", "gap_ms", "new_session", "session_id"])
++stats["sessions"] = int(df["session_key"].nunique())
++cart_keys = df.loc[df["event"] == "addtocart", "session_key"].unique()
++cart = df[df["session_key"].isin(cart_keys)].reset_index(drop=True)
++has_txn = (cart["event"] == "transaction").groupby(cart["session_key"]).any()
++stats["cart_sessions"] = int(len(cart_keys))
++stats["cart_sessions_with_transaction"] = int(has_txn.sum())
++stats["cart_session_transaction_rate"] = round(float(has_txn.mean()), 4)
++stats["cart_session_events"] = len(cart)
++
++CLEAN.mkdir(parents=True, exist_ok=True)
++cart.to_parquet(CLEAN / "events_cart_sessions.parquet", index=False)
++df[["timestamp", "visitorid", "event", "itemid", "session_key"]].to_parquet(CLEAN / "events_clean.parquet", index=False)
++STATS.write_text(json.dumps(stats, indent=2), encoding="utf-8")
++print(json.dumps(stats, indent=2))
+diff --git a/5-Results/paper2__leak-size-mechanism.csv b/5-Results/paper2__leak-size-mechanism.csv
+index 796003e..ffedb4c 100644
+--- a/5-Results/paper2__leak-size-mechanism.csv
++++ b/5-Results/paper2__leak-size-mechanism.csv
+@@ -2,3 +2,4 @@ dataset,cart_sessions,purchase_rate,abandoned_ending_on_add_to_cart,purchased_en
+ retail_rocket,43917,0.2717,0.6058,0.0214,0.688,0.0,821.0,172.4
+ flower_shop,828,0.3357,0.0073,0.0,0.723,0.0,993.0,606.4
+ rees46,115580,0.1606,0.4825,0.0201,0.8844,0.0,1239.0,508.0
++taobao,323471,0.1057,0.3637,0.1518,0.2972,372.5,2012.0,773.0
+diff --git a/5-Results/taobao__clean.json b/5-Results/taobao__clean.json
+new file mode 100644
+index 0000000..5766a41
+--- /dev/null
++++ b/5-Results/taobao__clean.json
+@@ -0,0 +1,21 @@
++{
++  "sample": "users with user_id % 10 == 0",
++  "sample_rows": 9985762,
++  "sample_users": 98768,
++  "rows_outside_window_dropped": 5455,
++  "exact_duplicates_dropped": 6,
++  "rr_rule_bot_visitors": 0,
++  "rr_rule_bot_events": 0,
++  "rr_rule_transactions_removed": 0,
++  "clean_event_mix": {
++    "view": 8938119,
++    "addtocart": 553595,
++    "fav": 287593,
++    "transaction": 200994
++  },
++  "sessions": 1650716,
++  "cart_sessions": 323471,
++  "cart_sessions_with_transaction": 34204,
++  "cart_session_transaction_rate": 0.1057,
++  "cart_session_events": 3706412
++}
+\ No newline at end of file
+diff --git a/5-Results/taobao__profile.json b/5-Results/taobao__profile.json
+new file mode 100644
+index 0000000..f06198c
+--- /dev/null
++++ b/5-Results/taobao__profile.json
+@@ -0,0 +1,25 @@
++{
++  "rows": 100150807,
++  "behavior_mix": {
++    "pv": 89716264,
++    "cart": 5530446,
++    "fav": 2888258,
++    "buy": 2015839
++  },
++  "users": 987994,
++  "ts_min_china": "1902-05-08 06:32:46",
++  "ts_max_china": "2037-04-09 13:22:35",
++  "days_with_100k_plus_rows": {
++    "2017-11-25": 10420015,
++    "2017-11-26": 10664602,
++    "2017-11-27": 10101147,
++    "2017-11-28": 9878190,
++    "2017-11-29": 10284073,
++    "2017-11-30": 10447740,
++    "2017-12-01": 10859436,
++    "2017-12-02": 13777869,
++    "2017-12-03": 13662159
++  },
++  "rows_outside_those_days": 55576,
++  "exact_duplicates_within_chunks": 49
++}
+\ No newline at end of file
+diff --git a/9-Paper2/leak_size_mechanism.py b/9-Paper2/leak_size_mechanism.py
+index b6c65ae..bb810ae 100644
+--- a/9-Paper2/leak_size_mechanism.py
++++ b/9-Paper2/leak_size_mechanism.py
+@@ -64,6 +64,9 @@ start = ree.groupby("session_key")["timestamp"].min()
+ ree = ree[ree["session_key"].isin(start.index[start >= pd.Timestamp("2019-10-09").value // 10**6])]
+ rows.append(endpoint_stats("rees46", ree, "transaction"))
+ 
++tao = pd.read_parquet(D / "taobao" / "clean" / "events_cart_sessions.parquet", columns=cols)
++rows.append(endpoint_stats("taobao", tao, "transaction"))
++
+ out = pd.DataFrame(rows)
+ out.to_csv(ROOT / "5-Results" / "paper2__leak-size-mechanism.csv", index=False)
+ print(out.T.to_string())

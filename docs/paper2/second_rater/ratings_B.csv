@@ -1,0 +1,42 @@
+item,rating,questions,note
+A1,N,,
+A2,F,Q1;Q4,End of session data is used; event count data is included in the model.
+A3,F,Q3,Not a specific decision
+A4,P,Q8,Smoothed data
+A5,F,Q1;Q5,End of session data is used; last event’s duration is used.
+A6,N,,
+A7,N,,
+B1,F,Q1;Q4,Prediction time problem.
+B2,N,,
+B3,P,Q5,Durations are the final events of the session.
+B4,F,Q1,History data includes the scored session data.
+B5,N,,
+B6,F,Q1;Q3,Whole label data occur after the prediction
+B7,N,,
+B8,P,Q1,Post sessions are in the dataset
+B9,N,,
+C1,N,,
+C2,F,Q5,Session timing use final event
+C3,N,,
+C4,F,Q1;Q3,Session counts are based on end of session (post)
+C5,F,Q8,AUC score is too high
+C6,N,,
+C7,N,,
+C8,F,Q1,Later sessions may be included
+C9,N,,
+D1,N,,
+D2,F,Q1,End of session data used in history.
+D3,N,,
+D4,F,Q1;Q3,Session counts are post prediction
+D5,N,,
+D6,P,Q1,History includes post prediction data.
+D7,F,Q1;Q5,All data uses the final event
+D8,N,,
+E1,P,Q1;Q8,Timing are based on end session.
+E2,N,,
+E3,P,Q1;Q8,End of session data includes the scored / predicted data.
+E4,N,,
+E5,N,,
+E6,P,Q1;Q4,Session counts are retrieved after the prediction
+E7,N,,
+E8,F,Q1,Later sessions included

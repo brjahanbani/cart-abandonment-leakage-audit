@@ -4,12 +4,13 @@
 Features for Cart-Abandonment Prediction" — Babak Rad Jahanbani, Ahmet Sayar.
 Corresponding author: babakrad.jahanbani@bahcesehir.edu.tr (ORCID [0009-0001-6910-9747](https://orcid.org/0009-0001-6910-9747)).
 
-## Status (as of 2026-10-17)
+## Status (as of 2026-10-30)
 
 | Venue | Status |
 |---|---|
-| IJACSA (thesai.org) | Manuscript **MS-17-10-0048**, **accepted for publication** (acceptance email October 2026). Registration fee paid (split equally between both authors; the university is expected to reimburse in January 2027). **Camera-ready submitted** (deadline 16 Oct 2026, 15:40) and confirmed **in the production queue** on 2026-10-17. Source: `camera-ready/`; reviewer responses: `camera-ready/RESPONSE_TO_REVIEWERS.md`. Still to come: publication notice → DOI. |
-| arXiv | **Submitted 2026-09-21** by Prof. Ahmet Sayar, category cs.AI, submission ID `submit/8109238`. The public `arXiv:YYMM.NNNNN` identifier is not recorded here yet — add it once announced. |
+| IJACSA (thesai.org) | **Published 2026-10-30**: Vol. 17, No. 10 (2026), Paper 97, pp. 1109–1118, DOI **10.14569/IJACSA.2026.0171097**, ISSN 2156-5570, open access (CC BY 4.0). [Paper page](https://thesai.org/Publications/ViewPaper?Volume=17&Issue=10&Code=IJACSA&SerialNo=97) · [PDF](https://thesai.org/Downloads/Volume17No10/Paper_97-When_Offline_Performance_Misleads.pdf). Pre-publication ID MS-17-10-0048. The published PDF was checked on 2026-10-30 against `camera-ready/Submitted Files/` (10 pages, authors and affiliations, Acknowledgment, the three Declarations, references [17]–[19]): it is the submitted file, with no production changes. On 2026-10-30 the DOI was **not yet registered** (doi.org: handle not found; Crossref: 404). IJACSA says Crossref takes a few days; Scopus, EI, Web of Science, Semantic Scholar, Inspec and EBSCOhost indexing typically takes 10–12 weeks (≈ mid-to-late January 2027). Registration fee split equally between both authors; the university is expected to reimburse it in January 2027. |
+| arXiv | **Submitted 2026-09-21** by Prof. Ahmet Sayar, category cs.AI, submission ID `submit/8109238`. The public `arXiv:YYMM.NNNNN` identifier is not recorded here yet — add it once known. To do (Prof. Sayar, from the submitting account): add the journal reference and DOI to the arXiv metadata; this does not need a new version. |
+| Author profiles | Added to LinkedIn and ORCID (2026-10-30). Google Scholar: waiting for the DOI to resolve and the paper to be indexed. |
 
 ## Contents
 

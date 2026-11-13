@@ -12,7 +12,7 @@ Each step is the script that produced a committed result file; the runner
 stops at the first failure. Inputs it needs (see docs/paper2/REPRODUCE.md):
 the Retail Rocket artifacts of paper 1, the private flower-shop exports in
 1-Data/own/raw/, REES46 2019-Oct.csv / 2019-Nov.csv in 1-Data/rees46/raw/, and
-Taobao UserBehavior.csv in 1-Data/taobao/raw/. A full run takes about an hour.
+Taobao UserBehavior.csv in 1-Data/taobao/raw/. A full run takes about 80 minutes.
 """
 
 import argparse
@@ -48,6 +48,11 @@ STEPS = [
     ("negative control: REES46 Oct", "9-Paper2/negative_control.py", ["rees46_oct"]),
     ("negative control: REES46 Nov", "9-Paper2/negative_control.py", ["rees46_nov"]),
     ("negative control: Taobao", "9-Paper2/negative_control.py", ["taobao"]),
+    ("flower shop: label agreement and sensitivity", "9-Paper2/flower_label_check.py", []),
+    ("PR-AUC table", "9-Paper2/pr_auc_table.py", []),
+    ("Taobao: 10% sample vs full file", "9-Paper2/taobao_sample_check.py", []),
+    ("scoring rules: Q4' identity share, lenient Q8", "9-Paper2/scoring_rules.py", []),
+    ("REES46 Oct: day profile of the burst days", "9-Paper2/burst_day_profile.py", []),
 ]
 
 ap = argparse.ArgumentParser()

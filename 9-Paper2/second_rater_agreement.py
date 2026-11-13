@@ -26,8 +26,11 @@ Reported (all 41 items unless stated):
 
 Run:
   python 9-Paper2/second_rater_agreement.py <rater>
+  python 9-Paper2/second_rater_agreement.py --between <rater_a> <rater_b>
 Output: 5-Results/paper2__second-rater-agreement__<rater>.csv, plus the
-disagreeing items printed for the paper's discussion.
+disagreeing items printed for the paper's discussion. With --between, the
+same measures between two independent raters (rater A in the place of the
+first author), written to ...__<rater_a>-vs-<rater_b>.csv.
 """
 
 import sys
@@ -75,12 +78,35 @@ def tally(df, col):
     }
 
 
+def load_ratings(rater):
+    ratings = pd.read_csv(RATER_DIR / f"ratings_{rater}.csv", dtype=str).fillna("")
+    ratings["rating"] = ratings["rating"].str.strip().str.upper()
+    return ratings[["item", "rating", "questions"]]
+
+
 def main(rater):
     key = pd.read_csv(RATER_DIR / "key.csv", dtype=str).fillna("")
-    second = pd.read_csv(RATER_DIR / f"ratings_{rater}.csv", dtype=str).fillna("")
-    second["rating"] = second["rating"].str.strip().str.upper()
-    df = key.merge(second[["item", "rating", "questions"]], on="item", how="left",
-                   suffixes=("_1", "_2"))
+    df = key.merge(load_ratings(rater), on="item", how="left", suffixes=("_1", "_2"))
+    report(df, rater)
+
+
+def main_between(rater_a, rater_b):
+    """Agreement of two independent raters with each other (protocol, third amendment).
+
+    Rater A takes the place of the first author; the tallies are then A's and B's.
+    """
+    key = pd.read_csv(RATER_DIR / "key.csv", dtype=str).fillna("")
+    a = load_ratings(rater_a)
+    missing = a.loc[~a["rating"].isin(CATEGORIES), "item"].tolist()
+    if missing or len(a) != len(key):
+        sys.exit(f"Missing or invalid ratings of {rater_a}: {', '.join(missing) or 'item count'}")
+    df = key.drop(columns=["first_author_rating", "questions"]).merge(
+        a.rename(columns={"rating": "first_author_rating"}), on="item", how="left")
+    df = df.merge(load_ratings(rater_b), on="item", how="left", suffixes=("_1", "_2"))
+    report(df, f"{rater_a}-vs-{rater_b}")
+
+
+def report(df, rater):
     missing = df.loc[df["rating"].isna() | ~df["rating"].isin(CATEGORIES), "item"].tolist()
     if missing:
         sys.exit(f"Missing or invalid ratings for: {', '.join(missing)}")
@@ -116,6 +142,10 @@ def main(rater):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        sys.exit("usage: python 9-Paper2/second_rater_agreement.py <rater>")
-    main(sys.argv[1])
+    if len(sys.argv) == 2:
+        main(sys.argv[1])
+    elif len(sys.argv) == 4 and sys.argv[1] == "--between":
+        main_between(sys.argv[2], sys.argv[3])
+    else:
+        sys.exit("usage: python 9-Paper2/second_rater_agreement.py <rater>\n"
+                 "       python 9-Paper2/second_rater_agreement.py --between <rater_a> <rater_b>")

@@ -321,3 +321,13 @@ were added to the paper. Published Tables IV–V unchanged (renumbered V–VI);
 8 → 10 pages. Submitted; IJACSA confirmed the paper is in the production
 queue on 2026-10-17. Mapping of every comment to its change:
 `paper/camera-ready/RESPONSE_TO_REVIEWERS.md`.
+
+## 2026-10-30 — Paper 1 published
+
+IJACSA Vol. 17, No. 10 (2026), Paper 97, pp. 1109–1118, DOI
+10.14569/IJACSA.2026.0171097, open access (CC BY 4.0). The published PDF is the
+submitted camera-ready file, with no production changes. Recorded in
+`paper/README.md`; Paper 2's reference updated from "in press" to the full
+citation. The DOI was not yet registered at Crossref on the day of
+publication. Still open: the journal reference on arXiv (Prof. Sayar), and
+Google Scholar once the DOI resolves.
